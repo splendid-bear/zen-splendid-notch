@@ -1,0 +1,20 @@
+[
+  {
+    "property": "zen.notch.always-visible",
+    "label": "Keep the notch visible (disable auto-hide)",
+    "type": "checkbox",
+    "defaultValue": false
+  },
+  {
+    "property": "zen.notch.disable-shadow",
+    "label": "Disable the notch shadow",
+    "type": "checkbox",
+    "defaultValue": false
+  },
+  {
+    "property": "zen.notch.disable-animation",
+    "label": "Disable animations (reduced motion is also respected)",
+    "type": "checkbox",
+    "defaultValue": false
+  }
+]

@@ -1,4 +1,4 @@
-/* Zen Notch — single-toolbar prototype. */
+/* zen-splendid-notch — single-toolbar prototype. */
 :root {
   --zen-notch-width: 840px;
   --zen-notch-height: 68px;
@@ -11,7 +11,9 @@
   --zen-notch-top: var(--zen-element-separation, 8px);
   /* Override if your Zen release uses a different sidebar-width variable. */
   --zen-notch-sidebar-width: var(--zen-sidebar-width, 250px);
-  --zen-notch-background: light-dark(#ebebed, #131313);
+  --zen-notch-color-light: #ebebed;
+  --zen-notch-color-dark: #131313;
+  --zen-notch-background: light-dark(var(--zen-notch-color-light), var(--zen-notch-color-dark));
 
   --zen-notch-shadow:
     0 2px 4px light-dark(rgb(0 0 0 / 20%), rgb(0 0 0 / 45%)),
@@ -104,7 +106,7 @@
       top: calc(0px - var(--zen-notch-top));
       left: 50%;
       transform: translateX(-50%);
-      width: max(0px, calc(100vw - var(--zen-notch-sidebar-width) - 48px));
+      width: 100%;
       height: max(var(--zen-notch-reveal-distance), var(--zen-notch-top));
       background: transparent;
       pointer-events: auto;
@@ -116,8 +118,19 @@
       pointer-events: auto !important;
     }
 
-    &:not(:hover, :focus-within, [focused="true"], [open], [has-popup-open="true"]) * {
-      pointer-events: none !important;
+    @media not -moz-pref("zen.notch.always-visible") {
+      &:not(:hover, :focus-within, [focused="true"], [open], [has-popup-open="true"]) * {
+        pointer-events: none !important;
+      }
+    }
+
+    @media -moz-pref("zen.notch.always-visible") {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+
+      &::before {
+        pointer-events: none;
+      }
     }
 
     &:is([focused="true"], [open], [breakout-extend], [zen-floating-urlbar="true"], :focus-within) {
@@ -223,6 +236,12 @@
     }
   }
 
+  /* Keep hover available with docked DevTools, but stop the invisible
+     trigger at the notch's top edge instead of covering toolbox tabs. */
+  &:has(.devtools-toolbox-iframe, .devtools-toolbox-splitter) #urlbar::before {
+    height: max(0px, var(--zen-notch-top));
+  }
+
   /* The sidebar precedes (and normally contains) the URL bar, so it is a
      valid anchor even when the focused URL bar moves into the top layer. */
   @supports (left: anchor(--zen-notch-sidebar right)) and (width: anchor-size(--zen-notch-sidebar width)) {
@@ -235,9 +254,6 @@
       width: min(var(--zen-notch-current-width), calc(100vw - anchor-size(--zen-notch-sidebar width, var(--zen-notch-sidebar-width)) - 48px)) !important;
       --urlbar-width: min(var(--zen-notch-current-width), calc(100vw - anchor-size(--zen-notch-sidebar width, var(--zen-notch-sidebar-width)) - 48px)) !important;
 
-      &::before {
-        width: max(0px, calc(100vw - anchor-size(--zen-notch-sidebar width, var(--zen-notch-sidebar-width)) - 48px));
-      }
     }
 
     &[zen-right-side="true"] #urlbar {
@@ -246,8 +262,16 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* Important overrides also beat the inline variables written by Zen's
+   native mod settings, including a custom animation duration. */
+@media (prefers-reduced-motion: reduce) or -moz-pref("zen.notch.disable-animation") {
   :root {
-    --zen-notch-animation-duration: 0ms;
+    --zen-notch-animation-duration: 0ms !important;
+  }
+}
+
+@media -moz-pref("zen.notch.disable-shadow") {
+  :root {
+    --zen-notch-shadow: none !important;
   }
 }

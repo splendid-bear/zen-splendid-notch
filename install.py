@@ -60,7 +60,7 @@ def update(profile: Path, action: str) -> None:
             # Never recursively remove a directory that may contain user files.
             if not any(target.iterdir()):
                 target.rmdir()
-        print("Uninstalled Zen Notch. Restart Zen. Your stylesheet preference was left unchanged.")
+        print("Uninstalled Splendid Notch. Restart Zen. Your stylesheet preference was left unchanged.")
 
 
 def main() -> None:
